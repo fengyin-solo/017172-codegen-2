@@ -47,6 +47,35 @@ function bidCalculator() {
         // 方案ID计数器
         scenarioIdCounter: 0,
 
+        // 窄屏版式：false=标准视图 | true=紧凑视图（选择持久化，刷新/再次进入/退出对比后保持一致）
+        compact: false,
+
+        /**
+         * 初始化：恢复上次选择的窄屏版式
+         */
+        init() {
+            try {
+                const savedLayout = localStorage.getItem('bid-calc-layout-mode');
+                if (savedLayout === 'compact') {
+                    this.compact = true;
+                }
+            } catch (e) {
+                // localStorage 不可用时沿用默认标准视图
+            }
+        },
+
+        /**
+         * 切换并持久化窄屏版式
+         */
+        setCompact(value) {
+            this.compact = value;
+            try {
+                localStorage.setItem('bid-calc-layout-mode', value ? 'compact' : 'standard');
+            } catch (e) {
+                // 持久化失败时仅在当前会话生效
+            }
+        },
+
         /**
          * 添加报价
          */
