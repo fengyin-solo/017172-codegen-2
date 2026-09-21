@@ -115,22 +115,34 @@ table {
     transition: all 0.3s ease;
 }
 
-/* 滚动条美化 */
-.overflow-x-auto::-webkit-scrollbar {
+/* 滚动条美化（横向表格与纵向列表共用同一套样式） */
+.overflow-x-auto,
+.overflow-y-auto {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+    -webkit-overflow-scrolling: touch;
+}
+
+.overflow-x-auto::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar {
+    width: 6px;
     height: 6px;
 }
 
-.overflow-x-auto::-webkit-scrollbar-track {
+.overflow-x-auto::-webkit-scrollbar-track,
+.overflow-y-auto::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 3px;
 }
 
-.overflow-x-auto::-webkit-scrollbar-thumb {
+.overflow-x-auto::-webkit-scrollbar-thumb,
+.overflow-y-auto::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
 }
 
-.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+.overflow-x-auto::-webkit-scrollbar-thumb:hover,
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
 }
 
@@ -139,8 +151,265 @@ table {
     table {
         font-size: 0.75rem;
     }
-    
+
     th, td {
         padding: 0.5rem 0.25rem;
+    }
+}
+
+/* ============================================
+   窄屏紧凑视图（仅移动端 + 用户主动开启时生效）
+   桌面端宽屏布局、玻璃卡片与渐变背景不受影响；
+   卡片悬浮、滑入动画、徽章与滚动条均复用上方样式
+   ============================================ */
+
+/* 窄屏下兜住横向溢出，表格等内部区域仍可自行横向滚动 */
+@media (max-width: 767px) {
+    html, body {
+        overflow-x: hidden;
+    }
+}
+
+@media (max-width: 767px) {
+    /* —— 页头 / 主容器 —— */
+    body.compact header {
+        padding-top: 0.875rem;
+        padding-bottom: 0.5rem;
+    }
+
+    body.compact header h1 {
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+    }
+
+    body.compact main {
+        padding-left: 0.625rem;
+        padding-right: 0.625rem;
+        padding-bottom: 1.5rem;
+    }
+
+    body.compact .app-grid {
+        gap: 0.625rem;
+    }
+
+    body.compact .panel-stack {
+        gap: 0.625rem;
+    }
+
+    /* —— 卡片：缩小内边距与圆角，保留 card-hover 悬浮阴影 —— */
+    body.compact .panel-stack > div {
+        border-radius: 0.625rem;
+        padding: 0.75rem;
+    }
+
+    body.compact .card-head {
+        gap: 0.5rem;
+        margin-bottom: 0.625rem;
+    }
+
+    body.compact .card-icon {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+
+    body.compact .card-icon svg {
+        width: 0.875rem;
+        height: 0.875rem;
+    }
+
+    body.compact .card-head h2 {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    }
+
+    body.compact .card-head p {
+        font-size: 0.6875rem;
+        line-height: 1rem;
+    }
+
+    /* —— 表单控件（仅文本/数字输入，避免影响复选框） —— */
+    body.compact .panel-stack input[type="text"],
+    body.compact .panel-stack input[type="number"],
+    body.compact .panel-stack button {
+        padding-top: 0.375rem;
+        padding-bottom: 0.375rem;
+        font-size: 0.8125rem;
+    }
+
+    body.compact .field-grid {
+        gap: 0.5rem;
+    }
+
+    body.compact .field-grid label {
+        margin-bottom: 0.25rem;
+    }
+
+    body.compact .mode-hint {
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    /* —— 方案管理 —— */
+    body.compact .scenario-save-row {
+        gap: 0.375rem;
+        margin-bottom: 0.625rem;
+    }
+
+    body.compact .scenario-grid {
+        gap: 0.375rem;
+    }
+
+    /* —— 报价录入区：输入行收成单行 —— */
+    body.compact .compact-entry {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.375rem;
+        margin-bottom: 0.625rem;
+    }
+
+    /* 覆盖原移动端堆叠的 space-y 间距，统一交由 gap 控制 */
+    body.compact .compact-entry[class] > [class] {
+        margin-top: 0;
+    }
+
+    body.compact .compact-entry input {
+        min-width: 0;
+    }
+
+    body.compact .compact-entry .bid-name-input {
+        flex: 1 1 0;
+    }
+
+    body.compact .compact-entry .bid-price-wrap {
+        flex: 1 1 0;
+        display: flex;
+        gap: 0.375rem;
+    }
+
+    body.compact .compact-entry .bid-add-btn {
+        flex-shrink: 0;
+        padding-left: 0.875rem;
+        padding-right: 0.875rem;
+        white-space: nowrap;
+    }
+
+    /* —— 报价列表：行更矮，保留 slide-in 滑入动画 —— */
+    body.compact .bid-list {
+        gap: 0.25rem;
+        max-height: 10.5rem;
+    }
+
+    body.compact .bid-list > div {
+        padding: 0.375rem 0.5rem;
+        border-radius: 0.5rem;
+    }
+
+    body.compact .bid-empty {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    body.compact .bid-empty svg {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+
+    body.compact .bid-clear-row {
+        margin-top: 0.5rem;
+    }
+
+    /* —— 计算结果区 —— */
+    body.compact .result-summary {
+        padding: 0.625rem;
+        margin-bottom: 0.625rem;
+        border-radius: 0.625rem;
+    }
+
+    body.compact .summary-grid {
+        gap: 0.375rem;
+    }
+
+    body.compact .summary-grid p:first-child {
+        font-size: 0.625rem;
+        margin-bottom: 0;
+    }
+
+    body.compact .summary-grid .summary-value {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    body.compact .result-list {
+        gap: 0.375rem;
+    }
+
+    body.compact .result-list > div {
+        padding: 0.5rem 0.625rem;
+        border-radius: 0.625rem;
+    }
+
+    body.compact .result-list .rank-badge {
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 0.6875rem;
+    }
+
+    body.compact .result-list .score-value {
+        font-size: 1.0625rem;
+        line-height: 1.5rem;
+    }
+
+    /* —— 方案对比 —— */
+    body.compact .compare-summary {
+        padding: 0.625rem;
+        margin-bottom: 0.625rem;
+        border-radius: 0.625rem;
+    }
+
+    body.compact .summary-track {
+        gap: 0.5rem;
+    }
+
+    body.compact .summary-card {
+        padding: 0.5rem 0.625rem;
+    }
+
+    body.compact .summary-card p,
+    body.compact .summary-card span {
+        font-size: 0.6875rem;
+    }
+
+    body.compact .summary-card .grid {
+        column-gap: 0.5rem;
+    }
+
+    /* 对比表更紧凑：继续走 .overflow-x-auto 的横向滚动条样式 */
+    body.compact .compare-table {
+        font-size: 0.6875rem;
+    }
+
+    body.compact .compare-table th,
+    body.compact .compare-table td {
+        padding: 0.375rem 0.25rem;
+    }
+
+    body.compact .compare-table th:not(:first-child),
+    body.compact .compare-table td:not(:first-child) {
+        min-width: 4.5rem;
+    }
+
+    body.compact .compare-table .rank-badge {
+        width: 1.375rem;
+        height: 1.375rem;
+    }
+
+    body.compact .config-compare {
+        margin-top: 0.875rem;
+        padding-top: 0.625rem;
+    }
+
+    body.compact .config-compare h3 {
+        margin-bottom: 0.5rem;
     }
 }

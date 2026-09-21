@@ -1,8 +1,37 @@
 /**
  * 投标报价计算器 - 核心逻辑
  */
+
+// 窄屏版式偏好的持久化键（'compact' | 'standard'）
+const LAYOUT_STORAGE_KEY = 'bid-calc-layout';
+
 function bidCalculator() {
     return {
+        // 窄屏版式：true 为紧凑视图，false 为标准视图；进入页面前由内联脚本预恢复
+        compactMode: false,
+
+        /**
+         * Alpine 初始化：从 localStorage 恢复用户上次选择的版式，
+         * 刷新、再次进入页面、退出对比模式返回时均保持一致
+         */
+        init() {
+            try {
+                this.compactMode = localStorage.getItem(LAYOUT_STORAGE_KEY) === 'compact';
+            } catch (e) {
+                this.compactMode = false;
+            }
+        },
+
+        /**
+         * 切换并持久化窄屏版式
+         */
+        setLayout(compact) {
+            this.compactMode = compact;
+            try {
+                localStorage.setItem(LAYOUT_STORAGE_KEY, compact ? 'compact' : 'standard');
+            } catch (e) {}
+        },
+
         // 配置参数
         config: {
             mode: 'single',        // 'single' 单低模式 | 'double' 双低模式
